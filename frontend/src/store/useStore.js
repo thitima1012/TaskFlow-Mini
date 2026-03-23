@@ -22,53 +22,96 @@ export const useStore = create((set, get) => ({
 
   login: async (email, password) => {
     try {
-      set({ loading: true });
+      set({ loading: true, error: null });
+
       const res = await axios.post(API + "/auth/login", { email, password });
+
       get().setToken(res.data.token);
       await get().fetchUser();
+
       set({ loading: false });
     } catch (err) {
-      set({ error: err.response?.data?.message, loading: false });
+      set({
+        error: err.response?.data?.message || "Login failed",
+        loading: false
+      });
     }
   },
 
   register: async (data) => {
-    await axios.post(API + "/auth/register", data);
+    try {
+      set({ loading: true, error: null });
+
+      await axios.post(API + "/auth/register", data);
+
+      set({ loading: false });
+    } catch (err) {
+      set({
+        error: err.response?.data?.message || "Register failed",
+        loading: false
+      });
+    }
   },
 
   fetchUser: async () => {
-    const res = await axios.get(API + "/auth/me", {
-      headers: { Authorization: get().token }
-    });
-    set({ user: res.data });
+    try {
+      const res = await axios.get(API + "/auth/me", {
+        headers: { Authorization: "Bearer " + get().token }
+      });
+
+      set({ user: res.data });
+    } catch (err) {
+      set({ error: "Fetch user failed" });
+    }
   },
 
   fetchTasks: async () => {
-    set({ loading: true });
-    const res = await axios.get(API + "/tasks", {
-      headers: { Authorization: get().token }
-    });
-    set({ tasks: res.data, loading: false });
+    try {
+      set({ loading: true });
+
+      const res = await axios.get(API + "/tasks", {
+        headers: { Authorization: "Bearer " + get().token }
+      });
+
+      set({ tasks: res.data, loading: false });
+    } catch (err) {
+      set({ error: "Fetch tasks failed", loading: false });
+    }
   },
 
   addTask: async (task) => {
-    await axios.post(API + "/tasks", task, {
-      headers: { Authorization: get().token }
-    });
-    get().fetchTasks();
+    try {
+      await axios.post(API + "/tasks", task, {
+        headers: { Authorization: "Bearer " + get().token }
+      });
+
+      get().fetchTasks();
+    } catch (err) {
+      set({ error: "Add task failed" });
+    }
   },
 
   deleteTask: async (id) => {
-    await axios.delete(API + "/tasks/" + id, {
-      headers: { Authorization: get().token }
-    });
-    get().fetchTasks();
+    try {
+      await axios.delete(API + "/tasks/" + id, {
+        headers: { Authorization: "Bearer " + get().token }
+      });
+
+      get().fetchTasks();
+    } catch (err) {
+      set({ error: "Delete failed" });
+    }
   },
 
   updateTask: async (id, data) => {
-    await axios.put(API + "/tasks/" + id, data, {
-      headers: { Authorization: get().token }
-    });
-    get().fetchTasks();
+    try {
+      await axios.put(API + "/tasks/" + id, data, {
+        headers: { Authorization: "Bearer " + get().token }
+      });
+
+      get().fetchTasks();
+    } catch (err) {
+      set({ error: "Update failed" });
+    }
   }
 }));
