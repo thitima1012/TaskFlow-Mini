@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API = import.meta.env.VITE_API_URL;
+const API = "https://taskflow-mini-7k89.onrender.com";
 
 export const useStore = create((set, get) => ({
   token: localStorage.getItem("token"),
