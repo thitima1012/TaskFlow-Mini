@@ -17,17 +17,22 @@ app.use(cors({
 
 app.use(express.json());
 
+// ✅ หน้าแรก (แก้ Not Found)
+app.get("/", (req, res) => {
+  res.send("Backend ทำงานแล้ว 🚀");
+});
+
 // ✅ Routes
 app.use("/auth", authRoutes);
 app.use("/tasks", taskRoutes);
 
-// ✅ MongoDB
+// ✅ MongoDB (แก้ชื่อ env ให้ตรง)
 mongoose
-  .connect(process.env.MONGODB)
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
-// ✅ PORT
+// ✅ PORT (กันพังบน Render)
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
