@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 
-const API = "https://taskflow-mini-7k89.onrender.com";
+const API = "https://taskflow-mini-1.onrender.com";
 
 export const useStore = create((set, get) => ({
   token: localStorage.getItem("token"),
