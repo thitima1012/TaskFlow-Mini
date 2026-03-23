@@ -28,7 +28,7 @@ app.use("/tasks", taskRoutes);
 
 // ✅ MongoDB (แก้ชื่อ env ให้ตรง)
 mongoose
-  .connect(process.env.MONGO_URI)
+  .connect(process.env.MONGODB)
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log(err));
 
